@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { requestBackend } from 'util/requests';
 import { AxiosRequestConfig } from 'axios';
 import './styles.css';
+import { toast } from 'react-toastify';
 
 const Form = () => {
 
@@ -32,8 +33,23 @@ const Form = () => {
       })
   }, []);
 
-  const onSubmit = () => {
-    // a construir...
+  const onSubmit = (formData: Employee) => {
+
+    const config: AxiosRequestConfig = {
+      method: 'POST',
+      url: `/employees`,
+      data: formData,
+      withCredentials: true,
+    }
+
+    requestBackend(config)
+      .then((response) => {
+        toast.info('Cadastrado com sucesso');
+        history.push('/admin/employees');
+      })
+      // .catch(error => {
+      //   toast.error('Erro ao salvar o registro.');
+      // });
   };
 
   return (
@@ -74,6 +90,7 @@ const Form = () => {
                   className={`form-control base-input ${errors.email ? 'is-invalid' : ''}`}
                   placeholder="Email do funcionário"
                   name="email"
+                  data-testid='email'
                 />
                 <div className="invalid-feedback d-block">
                   {errors.email?.message}
@@ -81,7 +98,7 @@ const Form = () => {
               </div>
 
               <div className="margin-bottom-30">
-                <label htmlFor="department" className='d-none'>Departamentos</label>
+                <label htmlFor="department" className='d-none'>Departamento</label>
                 <Controller
                   name='department'
                   rules={{ required: true }}
