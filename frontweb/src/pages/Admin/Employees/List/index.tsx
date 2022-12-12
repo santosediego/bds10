@@ -7,6 +7,7 @@ import { requestBackend } from 'util/requests';
 import { SpringPage } from 'types/vendor/spring';
 import { Employee } from 'types/employee';
 import './styles.css';
+import { hasAnyRoles } from 'util/auth';
 
 type ControlComponentsData = {
   activePage: number;
@@ -40,11 +41,13 @@ const List = () => {
 
   return (
     <>
-      <Link to="/admin/employees/create">
-        <button className="btn btn-primary text-white btn-crud-add">
-          ADICIONAR
-        </button>
-      </Link>
+      {hasAnyRoles(['ROLE_ADMIN']) &&
+        <Link to="/admin/employees/create">
+          <button className="btn btn-primary text-white btn-crud-add">
+            ADICIONAR
+          </button>
+        </Link>
+      }
 
       {page?.content.map((employee) => (
         <EmployeeCard key={employee.id} employee={employee} />
